@@ -1,3 +1,5 @@
+clear; close all;
+
 fid=fopen('data.txt','r');
 schedaggragation = zeros(13*12,5);  % aggragation matrix
                                     % 8am to 9pm in 5min blocks, 5d/wk
@@ -51,30 +53,55 @@ fclose(fid);
 
 % plots for day-by-day aggregation
 ff = 1;
+
+% proper heatmap
+figure(ff); ff = ff+1;
+heatmap(schedaggragation,'CellLabelColor','none',...
+    'GridVisible','off','Colormap',hot(250));
+
+% alternative heatmap with custom axes
 figure(ff); ff = ff+1;
 imagesc(schedaggragation);
+colormap hot(250);
+colorbar;
+xticks(1:5);
+xticklabels({'Mon','Tue','Wed','Thu','Fri'});
+ylim([1,157]);
+yticks(1:12:157)
+yticklabels({'8a','9a','10a','11a','12p','1p','2p','3p','4p',...
+    '5p','6p','7p','8p','9p'});
+run printt;
+
+% surface, like a 3D object
 figure(ff); ff = ff+1;
-surf(schedaggragation);
-figure(ff); ff = ff+1;
-contour(schedaggragation);
+surf(schedaggragation,'EdgeColor','none');
+
+% filled contour -- not really useful but visually interesting
 figure(ff); ff = ff+1;
 contourf(schedaggragation);
+
+% 3D contour -- not really useful
 figure(ff); ff = ff+1;
 contour3(schedaggragation);
+
+% ribbon plot
 figure(ff); ff = ff+1;
-mesh(schedaggragation);
-figure(ff); ff = ff+1;
-waterfall(schedaggragation);
-figure(ff); ff = ff+1;
-ribbon(schedaggragation);
+h = ribbon(schedaggragation);
+for ii = h'
+    set(ii,'EdgeAlpha',.5)
+end
 
 colors = lines(5);
 
+% heartbeat plot
 figure(ff); ff = ff+1;
 for ii = 1:5
-    plot3(ones(156,1)*ii,1:156,schedaggragation(:,ii)); hold on;
+    plot3(ones(156,1)*ii,1:156,flipud(schedaggragation(:,ii))); hold on;
+    zlim([0 6]);
 end
+axis off
 
+% manual, transparent skyline
 figure(ff); ff = ff+1;
 for ii = 1:5
     h = plot3(ones(156,1)*ii,1:156,schedaggragation(:,ii)); hold on;
@@ -83,12 +110,16 @@ for ii = 1:5
     end
 end
 
+% solid skyline
 figure(ff); ff = ff+1;
 for ii = 1:5
     fill3(ones(1,158)*ii,[1 1:156 156],...
-        [0 schedaggragation(:,ii)' 0],colors(ii,:)); hold on;
+        [0 fliplr(schedaggragation(:,ii)') 0],colors(ii,:)); hold on;
+    zlim([0 6]);
 end
+axis off;
 
+% 5-day aggregation subplots
 figure(ff); ff = ff+1;
 for ii = 1:5
     subplot(5,1,ii);
@@ -97,6 +128,7 @@ for ii = 1:5
     ylim([0 6]);
     axis off;
 end
+run printt;
 
 % area plot for each of the 5 weekdays during semester _sem_
 sem = 1;
@@ -121,3 +153,21 @@ end
 fill([1 1:156 156],[0 agg' 0],'blue'); hold on;
 ylim([0 5]);
 axis off;
+
+%% same as above but loop through all semesters, assemble subplot
+figure(ff); ff = ff+1;
+for sem = 1:8
+    agg = zeros(156,1);
+    for ii = 1:156
+        agg(ii) = sum(schedbysem(ii,:,sem));
+    end
+    if mod(sem,2) == 0
+        subplot(2,4,5-0.5*sem);
+    else
+        subplot(2,4,8.5-0.5*sem);
+    end
+    fill([1 1:156 156],[0 agg' 0],'blue');
+    ylim([0 5]);
+    title(semlookup(sem));
+    axis off;
+end
