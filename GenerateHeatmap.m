@@ -40,3 +40,42 @@ while line_read ~= -1
 end
 
 fclose(fid);
+
+ii = 1;
+figure(ii); ii = ii+1;
+imagesc(schedaggragation);
+figure(ii); ii = ii+1;
+surf(schedaggragation);
+figure(ii); ii = ii+1;
+contour(schedaggragation);
+figure(ii); ii = ii+1;
+contourf(schedaggragation);
+figure(ii); ii = ii+1;
+contour3(schedaggragation);
+figure(ii); ii = ii+1;
+mesh(schedaggragation);
+figure(ii); ii = ii+1;
+waterfall(schedaggragation);
+figure(ii); ii = ii+1;
+ribbon(schedaggragation);
+
+figure(ii); ii = ii+1;
+for ii = 1:5
+    plot3(ones(156,1)*ii,1:156,schedaggragation(:,ii)); hold on;
+end
+
+figure(ii); ii = ii+1;
+for ii = 1:5
+    h = plot3(ones(156,1)*ii,1:156,schedaggragation(:,ii)); hold on;
+    for jj = 1:156
+        plot3([ii ii],[jj jj],[0 schedaggragation(jj,ii)],'Color',h.Color);
+    end
+end
+
+figure(ii); ii = ii+1;
+for ii = 1:5
+    fill3(ones(1,158)*ii,[1 1:156 156],...
+        [0 schedaggragation(:,ii)' 0],colors(ii,:)); hold on;
+end
+
+
