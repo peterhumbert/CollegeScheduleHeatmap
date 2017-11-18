@@ -41,6 +41,7 @@ end
 
 fclose(fid);
 
+% plots for day-by-day aggregation
 ii = 1;
 figure(ii); ii = ii+1;
 imagesc(schedaggragation);
@@ -58,6 +59,8 @@ figure(ii); ii = ii+1;
 waterfall(schedaggragation);
 figure(ii); ii = ii+1;
 ribbon(schedaggragation);
+
+colors = lines(5);
 
 figure(ii); ii = ii+1;
 for ii = 1:5
@@ -78,4 +81,14 @@ for ii = 1:5
         [0 schedaggragation(:,ii)' 0],colors(ii,:)); hold on;
 end
 
+figure(ii); ii = ii+1;
+for ii = 1:5
+    subplot(5,1,ii);
+    fill([1 1:156 156],...
+        [0 schedaggragation(:,ii)' 0],colors(ii,:)); hold on;
+    ylim([0 6]);
+    axis off;
+end
 
+% TODO add plots for each semester: line/area for each day, time
+% aggregation
